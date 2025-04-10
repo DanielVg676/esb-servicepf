@@ -13,13 +13,12 @@ import com.utd.ti.soa.esb_service.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utd.ti.soa.esb_service.model.Client;
 import com.utd.ti.soa.esb_service.model.Product;
-import com.utd.ti.soa.esb_service.model.CreateOrderRequest;
+import com.utd.ti.soa_esb_service.model.CreateOrderRequest;
 
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
 import javax.net.ssl.SSLException;
@@ -28,11 +27,11 @@ import javax.net.ssl.SSLException;
 @RequestMapping("/app/esb")
 public class ESBController {
 
-    private final WebClient webClient = WebClient.create();
+    private final WebClient webClient; // Solo declaramos el campo
     private final Auth auth;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ESBController(Auth auth) {
+    public ESBController(Auth auth) throws SSLException { // Agregamos throws SSLException
         this.auth = auth;
 
         // Configurar SSL para ignorar verificación de certificados (solo desarrollo)
@@ -49,7 +48,6 @@ public class ESBController {
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
     }
-    
 
     // ---------- USERS ----------
 
