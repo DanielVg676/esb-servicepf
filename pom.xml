@@ -75,7 +75,19 @@
     <artifactId>lombok</artifactId>
     <version>1.18.36</version>
     <scope>provided</scope> 
-</dependency>
+    </dependency>
+
+    <!-- Spring Boot WebFlux -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+    <!-- Netty SSL -->
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>4.1.94.Final</version> <!-- Asegúrate de usar una versión compatible -->
+    </dependency>
 
 
     </dependencies>
