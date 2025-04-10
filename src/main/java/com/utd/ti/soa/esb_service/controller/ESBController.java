@@ -13,7 +13,7 @@ import com.utd.ti.soa.esb_service.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utd.ti.soa.esb_service.model.Client;
 import com.utd.ti.soa.esb_service.model.Product;
-import com.utd.ti.soa_esb_service.model.CreateOrderRequest;
+import com.utd.ti.soa.esb_service.model.CreateOrderRequest; // Corregido el paquete
 
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -27,11 +27,11 @@ import javax.net.ssl.SSLException;
 @RequestMapping("/app/esb")
 public class ESBController {
 
-    private final WebClient webClient; // Solo declaramos el campo
+    private final WebClient webClient;
     private final Auth auth;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ESBController(Auth auth) throws SSLException { // Agregamos throws SSLException
+    public ESBController(Auth auth) throws SSLException {
         this.auth = auth;
 
         // Configurar SSL para ignorar verificación de certificados (solo desarrollo)
