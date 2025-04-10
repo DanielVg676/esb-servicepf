@@ -1,19 +1,11 @@
 package com.utd.ti.soa.esb_service.controller;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.core.ParameterizedTypeReference;
-import reactor.netty.http.client.HttpClient;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.cert.X509Certificate;
-import java.security.SecureRandom;
 import java.util.List;
 
 import com.utd.ti.soa.esb_service.utils.Auth;
@@ -22,51 +14,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utd.ti.soa.esb_service.model.Client;
 import com.utd.ti.soa.esb_service.model.Product;
 import com.utd.ti.soa.esb_service.model.CreateOrderRequest;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
+
+
 
 @RestController
 @RequestMapping("/app/esb")
 public class ESBController {
 
-    private final WebClient webClient;
+    private final WebClient webClient = WebClient.create();
     private final Auth auth;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ESBController(Auth auth) throws Exception {
+    public ESBController(Auth auth) {
         this.auth = auth;
-        this.webClient = insecureWebClient();
-    }
-
-    @Bean
-    public WebClient insecureWebClient() throws Exception {
-        // Configurar un TrustManager que acepte todos los certificados
-        TrustManager[] trustAllCerts = new TrustManager[]{
-            new X509TrustManager() {
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {}
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-                public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
-            }
-        };
-
-        // Crear un SSLContext con el TrustManager personalizado
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, trustAllCerts, new SecureRandom());
-
-        // Convertir el SSLContext de javax.net.ssl a un SslContext de Netty
-        SslContext nettySslContext = SslContextBuilder.forClient()
-                .trustManager((X509TrustManager) trustAllCerts[0])
-                .build();
-
-        // Configurar el HttpClient con el SslContext de Netty
-        HttpClient httpClient = HttpClient.create()
-                .secure(sslSpec -> sslSpec.sslContext(nettySslContext));
-
-        // Construir el WebClient con el HttpClient personalizado
-        return WebClient.builder()
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .build();
     }
 
     // ---------- USERS ----------
@@ -388,54 +348,5 @@ public class ESBController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error interno al crear la orden: " + e.getMessage());
         }
-    }
-
-    @PostMapping("/users/login")
-public ResponseEntity<String> login(
-        @RequestBody User user,
-        @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-    try {
-        String response = webClient.post()
-                .uri("https://userspf-production.up.railway.app/users/login")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .bodyValue(user)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        return ResponseEntity.ok(response);
-    } catch (Exception e) {
-        return ResponseEntity.status(500).body("Error interno al iniciar sesión: " + e.getMessage());
-    }
-}
-
-// Nuevo endpoint para recuperación de contraseña
-@PostMapping("/users/password")
-public ResponseEntity<String> recoverPassword(
-        @RequestBody PasswordRecoveryRequest recoveryRequest) {
-    try {
-        String response = webClient.post()
-                .uri("https://userspf-production.up.railway.app/users/password")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .bodyValue(recoveryRequest)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        return ResponseEntity.ok(response);
-    } catch (Exception e) {
-        return ResponseEntity.status(500).body("Error interno al procesar recuperación de contraseña: " + e.getMessage());
-    }
-}
-
-
-class PasswordRecoveryRequest {
-    private String email;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }
