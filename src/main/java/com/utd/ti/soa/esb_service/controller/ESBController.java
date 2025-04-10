@@ -5,7 +5,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.core.ParameterizedTypeReference;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class ESBController {
                 return ResponseEntity.status(401).body("Token inválido o expirado");
             }
             String response = webClient.post()
-                    .uri("http://localhost:3004/users/newUser")
+                    .uri("https://userspf-production.up.railway.app/users/newUser")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(user)
@@ -60,7 +59,7 @@ public class ESBController {
         }
         try {
             String response = webClient.get()
-                    .uri("http://localhost:3004/users/getUsers")
+                    .uri("https://userspf-production.up.railway.app/users/getUsers")
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .retrieve()
                     .bodyToMono(String.class)
@@ -81,7 +80,7 @@ public class ESBController {
         }
         try {
             String response = webClient.patch()
-                    .uri("http://localhost:3004/users/update/" + id)
+                    .uri("https://userspf-production.up.railway.app/users/update/" + id)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(user)
@@ -103,7 +102,7 @@ public class ESBController {
         }
         try {
             String response = webClient.patch()
-                    .uri("http://localhost:3004/users/deleteUser/" + id)
+                    .uri("https://userspf-production.up.railway.app/users/deleteUser/" + id)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .retrieve()
                     .bodyToMono(String.class)
@@ -120,7 +119,7 @@ public class ESBController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         try {
             String response = webClient.post()
-                    .uri("http://localhost:3004/users/login")
+                    .uri("https://userspf-production.up.railway.app/users/login")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(user)
@@ -144,7 +143,7 @@ public class ESBController {
                 return ResponseEntity.status(401).body("Token inválido o expirado");
             }
             String response = webClient.post()
-                    .uri("http://localhost:3000/api/clients/new")
+                    .uri("https://clientspf-production.up.railway.app/api/clients/new")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(client)
@@ -165,7 +164,7 @@ public class ESBController {
         }
         try {
             List<Client> clients = webClient.get()
-                    .uri("http://localhost:3000/api/clients/all")
+                    .uri("https://clientspf-production.up.railway.app/api/clients/all")
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<List<Client>>() {})
@@ -185,7 +184,7 @@ public class ESBController {
         }
         try {
             String response = webClient.get()
-                    .uri("http://localhost:3001/clients/getClientid/" + id)
+                    .uri("https://clientspf-production.up.railway.app/clients/getClientid/" + id)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .retrieve()
                     .bodyToMono(String.class)
@@ -206,7 +205,7 @@ public class ESBController {
         }
         try {
             String response = webClient.put()
-                    .uri("http://localhost:3001/clients/updateClient/" + id)
+                    .uri("https://clientspf-production.up.railway.app/clients/updateClient/" + id)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(client)
@@ -228,7 +227,7 @@ public class ESBController {
         }
         try {
             String response = webClient.patch()
-                    .uri("http://localhost:3001/clients/deleteClient/" + id)
+                    .uri("https://clientspf-production.up.railway.app/clients/deleteClient/" + id)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .retrieve()
                     .bodyToMono(String.class)
@@ -250,7 +249,7 @@ public class ESBController {
         }
         try {
             String response = webClient.post()
-                    .uri("http://localhost:3008/products/newProduct")
+                    .uri("https://productspf-production.up.railway.app/products/newProduct")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(product)
@@ -271,7 +270,7 @@ public class ESBController {
         }
         try {
             List<Product> products = webClient.get()
-                    .uri("http://localhost:3008/products/allProducts")
+                    .uri("https://productspf-production.up.railway.app/products/allProducts")
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<List<Product>>() {})
@@ -292,7 +291,7 @@ public class ESBController {
         }
         try {
             String response = webClient.patch()
-                    .uri("http://localhost:3008/products/updateProduct/" + id)
+                    .uri("https://productspf-production.up.railway.app/products/updateProduct/" + id)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(product)
@@ -314,7 +313,7 @@ public class ESBController {
         }
         try {
             String response = webClient.patch()
-                    .uri("http://localhost:3008/products/deleteProduct/" + id)
+                    .uri("https://productspf-production.up.railway.app/products/deleteProduct/" + id)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .retrieve()
                     .bodyToMono(String.class)
@@ -336,7 +335,7 @@ public class ESBController {
         }
         try {
             String response = webClient.post()
-                    .uri("http://localhost:3005/api/payments/create-order")
+                    .uri("https://payment-production-bec3.up.railway.app/api/payments/create-order")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(orderRequest)
