@@ -389,4 +389,53 @@ public class ESBController {
             return ResponseEntity.status(500).body("Error interno al crear la orden: " + e.getMessage());
         }
     }
+
+    @PostMapping("/users/login")
+public ResponseEntity<String> login(
+        @RequestBody User user,
+        @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    try {
+        String response = webClient.post()
+                .uri("https://userspf-production.up.railway.app/users/login")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .bodyValue(user)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        return ResponseEntity.ok(response);
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body("Error interno al iniciar sesión: " + e.getMessage());
+    }
+}
+
+// Nuevo endpoint para recuperación de contraseña
+@PostMapping("/users/password")
+public ResponseEntity<String> recoverPassword(
+        @RequestBody PasswordRecoveryRequest recoveryRequest) {
+    try {
+        String response = webClient.post()
+                .uri("https://userspf-production.up.railway.app/users/password")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(recoveryRequest)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        return ResponseEntity.ok(response);
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body("Error interno al procesar recuperación de contraseña: " + e.getMessage());
+    }
+}
+
+
+class PasswordRecoveryRequest {
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
