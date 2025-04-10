@@ -160,7 +160,7 @@ public class ESBController {
                 return ResponseEntity.status(401).body("Token inválido o expirado");
             }
             String response = webClient.post()
-                    .uri("https://clientspf-production.up.railway.app/api/clients/new")
+                    .uri("https://clientspf-production.up.railway.app/api/clients/createClient")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, token)
                     .bodyValue(client)
