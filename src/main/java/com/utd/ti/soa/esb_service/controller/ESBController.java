@@ -15,8 +15,6 @@ import com.utd.ti.soa.esb_service.model.Client;
 import com.utd.ti.soa.esb_service.model.Product;
 import com.utd.ti.soa.esb_service.model.CreateOrderRequest;
 
-
-
 @RestController
 @RequestMapping("/app/esb")
 public class ESBController {
@@ -131,6 +129,23 @@ public class ESBController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error interno al iniciar sesión: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/users/password")
+    public ResponseEntity<String> recoverPassword(
+            @RequestBody String emailJson) {
+        try {
+            String response = webClient.post()
+                    .uri("https://userspf-production.up.railway.app/users/password")
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .bodyValue(emailJson)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error interno al procesar recuperación de contraseña: " + e.getMessage());
         }
     }
 
