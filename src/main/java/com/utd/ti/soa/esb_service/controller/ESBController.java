@@ -6,11 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector; // Import correcto
-import reactor.netty.http.client.HttpClient;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-
 import java.util.List;
 
 import com.utd.ti.soa.esb_service.utils.Auth;
@@ -24,28 +19,15 @@ import com.utd.ti.soa.esb_service.model.CreateOrderRequest;
 @RequestMapping("/app/esb")
 public class ESBController {
 
-    private final WebClient webClient;
+    private final WebClient webClient = WebClient.create();
     private final Auth auth;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ESBController(Auth auth) throws Exception {
+    public ESBController(Auth auth) {
         this.auth = auth;
-        this.webClient = createWebClient();
     }
 
-    private WebClient createWebClient() throws Exception {
-        SslContext sslContext = SslContextBuilder
-                .forClient()
-                .protocols("TLSv1.2", "TLSv1.3")
-                .build();
-
-        HttpClient httpClient = HttpClient.create()
-                .secure(t -> t.sslContext(sslContext));
-
-        return WebClient.builder()
-                .clientConnector(new ReactorClientHttpConnector(httpClient)) // Clase correcta
-                .build();
-    }
+    // ---------- USERS ----------
 
     @PostMapping("/users")
     public ResponseEntity<String> createUser(
@@ -149,6 +131,8 @@ public class ESBController {
             return ResponseEntity.status(500).body("Error interno al iniciar sesión: " + e.getMessage());
         }
     }
+
+    // ---------- CLIENTS ----------
 
     @PostMapping("/clients")
     public ResponseEntity<String> createClient(
@@ -254,6 +238,8 @@ public class ESBController {
         }
     }
 
+    // ---------- PRODUCTS ----------
+
     @PostMapping("/products")
     public ResponseEntity<String> createProduct(
             @RequestBody Product product,
@@ -337,6 +323,8 @@ public class ESBController {
             return ResponseEntity.status(500).body("Error interno al dar de baja el producto: " + e.getMessage());
         }
     }
+
+    // ---------- PAYMENTS ----------
 
     @PostMapping("/payments/create-order")
     public ResponseEntity<String> createOrder(
