@@ -15,6 +15,15 @@ import com.utd.ti.soa.esb_service.model.Client;
 import com.utd.ti.soa.esb_service.model.Product;
 import com.utd.ti.soa.esb_service.model.CreateOrderRequest;
 
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+
+import javax.net.ssl.SSLException;
+
 @RestController
 @RequestMapping("/app/esb")
 public class ESBController {
@@ -25,7 +34,22 @@ public class ESBController {
 
     public ESBController(Auth auth) {
         this.auth = auth;
+
+        // Configurar SSL para ignorar verificación de certificados (solo desarrollo)
+        SslContext sslContext = SslContextBuilder
+                .forClient()
+                .trustManager(InsecureTrustManagerFactory.INSTANCE) // Ignora validación SSL
+                .protocols("TLSv1.2", "TLSv1.3")
+                .build();
+
+        HttpClient httpClient = HttpClient.create()
+                .secure(t -> t.sslContext(sslContext));
+
+        this.webClient = WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
     }
+    
 
     // ---------- USERS ----------
 
@@ -47,6 +71,7 @@ public class ESBController {
                     .block();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Error interno al crear usuario: " + e.getMessage());
         }
     }
