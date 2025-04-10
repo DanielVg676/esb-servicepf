@@ -1,0 +1,9 @@
+server:
+  port: 8001
+
+spring:
+  aplication:
+    name: esb-service
+
+jwt:
+  secret: "utd1234"
