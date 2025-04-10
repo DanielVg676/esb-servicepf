@@ -14,3 +14,9 @@ public class User {
     private String phone;
     private String password;
 }
+
+public class CreateOrderRequest {
+    private Long clientId;
+    private List<Long> productIds;
+    private Double totalAmount;
+}
